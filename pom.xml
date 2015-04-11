@@ -92,6 +92,26 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <version>1.3.1</version>
     </dependency>
     <dependency>
+      <groupId>com.typesafe.akka</groupId>
+      <artifactId>akka-actor_2.10</artifactId>
+      <version>2.3.9</version>
+    </dependency>
+    <dependency>
+      <groupId>io.spray</groupId>
+      <artifactId>spray-client_2.10</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.spray</groupId>
+      <artifactId>spray-can_2.10</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.spray</groupId>
+      <artifactId>spray-routing_2.10</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
       <groupId>com.stackmob</groupId>
       <artifactId>newman_2.10</artifactId>
       <version>1.3.5</version>
@@ -116,6 +136,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <groupId>org.scalanlp</groupId>
       <artifactId>epic_2.10</artifactId>
       <version>0.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scalanlp</groupId>
+      <artifactId>epic-parser-en-span_2.10</artifactId>
+      <version>2015.2.19</version>
     </dependency>
   </dependencies>
 </project>
