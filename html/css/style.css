@@ -1,0 +1,26 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.result {
+    padding: 10px;
+    margin: 5px 0 0 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+
+.result h3 {
+    margin: 0 0 0 0;
+    color: #000000;
+}
+.result h4 {
+    color: #b6b6b6;
+}
+
+p.extendedExtract {
+    display: none;
+}

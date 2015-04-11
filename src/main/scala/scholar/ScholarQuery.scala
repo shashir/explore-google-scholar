@@ -1,15 +1,18 @@
-import java.io.File
-
-import scala.concurrent.Future
-import org.jsoup.Jsoup
-import org.jsoup.nodes._
-import scala.collection._
-import scala.collection.JavaConverters._
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.util.PDFTextStripper
+package scholar
 
 import java.net.{URL, URLEncoder}
+
+import extended_extract.ExtendedExtractCreator
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.util.PDFTextStripper
+import org.jsoup.Jsoup
+import org.jsoup.nodes._
+import scholar.Article
+
+import scala.collection.JavaConverters._
+import scala.collection._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 final case class ScholarQuery(eeCreator: ExtendedExtractCreator) {
   private val extendedExtractsCache: mutable.Map[String, Future[String]] = mutable.Map()
@@ -18,7 +21,7 @@ final case class ScholarQuery(eeCreator: ExtendedExtractCreator) {
     query: String,
     numRequested: Int,
     numToQuery: Int = 100
-    ): Stream[Article] = {
+    ): Seq[Article] = {
     ScholarQuery.query(eeCreator, extendedExtractsCache)(query, numRequested, numToQuery)
   }
 
@@ -29,11 +32,10 @@ final case class ScholarQuery(eeCreator: ExtendedExtractCreator) {
 
 object ScholarQuery {
   val SCHOLAR_QUERY_FORMAT: String = "https://scholar.google.com/scholar?hl=en&q=%s&start=%d&num=%d"
-  val ABUSE_EXCEPTION: String = "&google_abuse=GOOGLE_ABUSE_EXEMPTION%3DID%3Db2876d13b3004eae:TM%3D14" +
-    "28766803:C%3Dc:IP%3D199.87.86.249-:S%3DAPGng0sE2FE4fMSj1LyumPR" +
-    "HJDuZwfPPdw%3B+path%3D/%3B+domain%3Dgoogle.com%3B+expires%3DSat,+11-Apr-2015+18:40:03+GMT"
-  val USER_AGENT: String = "Mozilla/5.0 (X11; U; Linux x86_64; it-it) AppleWebKit/534.26+ " +
-    "(KHTML, like Gecko) Ubuntu/11.04 Epiphany/2.30.6"
+  val ABUSE_EXCEPTION: String = "&google_abuse=GOOGLE_ABUSE_EXEMPTION%3DID%3Dc42842052016be94:TM%3D1428789" +
+    "995:C%3Dc:IP%3D199.87.86.249-:S%3DAPGng0uFPHtR0jgRoajFWpIKdFrExLwYzg%3B+path%3D" +
+    "/%3B+domain%3Dgoogle.com%3B+expires%3DSun,+12-Apr-2015+01:06:35+GMT"
+  val USER_AGENT: String = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
   val RESULT_SELECTOR: String = "div.gs_r"
   val TITLE_SELECTOR: String = "div.gs_ri > h3.gs_rt > a"
   val AUTHOR_SELECTOR: String = "div.gs_ri > div.gs_a"
@@ -47,8 +49,8 @@ object ScholarQuery {
     query: String,
     numRequested: Int,
     numToQuery: Int = 100
-  ): Stream[Article] = {
-    (0 until numToQuery by RESULTS_PER_PAGE).toStream.flatMap { start: Int =>
+  ): Seq[Article] = {
+    (0 until numToQuery by RESULTS_PER_PAGE).view.flatMap { start: Int =>
       Jsoup.connect(SCHOLAR_QUERY_FORMAT.format(
         URLEncoder.encode(query, "UTF-8"),
         start,
@@ -81,7 +83,7 @@ object ScholarQuery {
           case _ => None
         }
       }
-    }.take(numRequested).toStream
+    }.take(numRequested).view
   }
 
   def downloadPdfToString(url: String): String = {

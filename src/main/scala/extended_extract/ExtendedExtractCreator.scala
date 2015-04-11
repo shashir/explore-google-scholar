@@ -1,5 +1,7 @@
-import epic.parser._
+package extended_extract
+
 import epic.preprocess.MLSentenceSegmenter
+import scholar.Article
 
 import scala.collection.parallel.ParMap
 
@@ -56,7 +58,7 @@ object ApproximateAbstract extends ExtendedExtractCreator {
 case class SentenceBasedExtractCreator(
   weightedStrategies: ParMap[SentenceBasedExtractCreatorStrategy, Double]
 ) extends ExtendedExtractCreator {
-  import SentenceBasedExtractCreator._
+  import extended_extract.SentenceBasedExtractCreator._
 
   def apply(article: Article, articleText: String): String = {
     sentences(articleText).map(tokens).sliding(NUM_SENTENCES).foldLeft(DensestChunk("", 0.0)) {
@@ -99,7 +101,7 @@ trait SentenceBasedExtractCreatorStrategy {
 }
 
 object DenseWordsSentences extends SentenceBasedExtractCreatorStrategy {
-  import SentenceBasedExtractCreator._
+  import extended_extract.SentenceBasedExtractCreator._
   def apply(article: Article, tokensBySentence: IndexedSeq[IndexedSeq[String]]): Double = {
     val allTokens: Seq[String] = tokensBySentence.flatten
     return allTokens.size / NUM_SENTENCES.toDouble
@@ -114,7 +116,7 @@ object DenseCharactersSentences extends SentenceBasedExtractCreatorStrategy {
 }
 
 object TitlePacked extends SentenceBasedExtractCreatorStrategy {
-  import SentenceBasedExtractCreator._
+  import extended_extract.SentenceBasedExtractCreator._
   def apply(article: Article, tokensBySentence: IndexedSeq[IndexedSeq[String]]): Double = {
     val titleTokens: Set[String] = tokens(article.title).toSet
     val allTokens: Seq[String] = tokensBySentence.flatten
@@ -132,7 +134,7 @@ object FewestNumerics extends SentenceBasedExtractCreatorStrategy {
 object FewestTableAndFigures extends SentenceBasedExtractCreatorStrategy {
   implicit def fuzzyMatchingString(string: String) = new FuzzyMatchString(string)
   val stopWords = Set("Table", "TABLE", "Figure", "FIGURE")
-  import SentenceBasedExtractCreator._
+  import extended_extract.SentenceBasedExtractCreator._
   def apply(article: Article, tokensBySentence: IndexedSeq[IndexedSeq[String]]): Double = {
     return tokensBySentence.filterNot(
       _.exists(a => stopWords.exists(s => s.fuzzyEquals(a.trim(), 2)))).size / NUM_SENTENCES.toDouble

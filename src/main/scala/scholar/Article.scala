@@ -1,7 +1,4 @@
-import java.net.URL
-
-import scala.concurrent._
-import java.io._
+package scholar
 
 /**
  * Created by shashir on 4/10/15.
