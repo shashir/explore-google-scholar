@@ -7,15 +7,11 @@
   <script src="js/jquery-1.11.2.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script>
-    function changeText(i) {
-      var element = document.getElementById("more" + i);
-      if ("more" == document.getElementById("more" + i).innerHTML) {
-        element.innerHTML = "less";
-        element.nextSibling.style.display = "block"
-      } else {
-        element.innerHTML = "more"
-        element.nextSibling.style.display = "none"
-      }
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
     $(document).ready(function() {
       $("#query").focus();
@@ -25,10 +21,22 @@
           $('#submit').click();
       });
 
+      var serverAddr = decodeURIComponent(getParameterByName("addr"))
+      if (serverAddr == "") {
+        serverAddr = "http://localhost:8080"
+      }
+
       $("#submit").click(function() {
+          var strategy = $('#strategy input:radio:checked').val();
+          var query = $("#query").val().trim();
+          if (query == "") {
+            query = "GVHD";
+          }
+          $('#results').empty();
           $('#results').html("<div class=\"col-md-12\"><img src=\"ajax-loader.gif\"/></div>");
+          console.log(strategy);
           $.ajax({
-            url: "http://localhost:8080/results?q=" + encodeURIComponent($("#query").val()) + "&n=5",
+            url: serverAddr + "/results?q=" + encodeURIComponent(query) + "&n=5&s=" + strategy,
             type: "GET",
             dataType: "json",
             success: function(data) {
@@ -46,15 +54,21 @@
                     "<div class=\"col-md-12\"><div class=\"result\"><h3>" + article.title +
                     "</h3><h4>" + article.authors +
                     "</h4><p>" + article.extract +
-                    "</p><a class=\"more\" onclick=\"changeText(" + i + ")\" id=\"more" + i.toString() +
-                    "\">more</a><p class=\"extendedExtract\" id=\"res" + i.toString() +
-                    "\"><img src=\"ajax-loader.gif\"/></p></div></div>"
+                    "</p>" +
+                    "<div class='panel-group' id='accordion'> <div class='panel panel-default' id='panel" + i.toString() +
+                    "'> <div class='panel-heading'> <h4 class='panel-title'> <a data-toggle='collapse' data-target='#collapse" + i.toString() +
+                    "' class='collapsed'> Extended extract </a> </h4> </div> <div id='collapse" + i.toString() +
+                    "' class='panel-collapse collapse'> <div class='panel-body'><img src=\"ajax-loader.gif\"/></div> </div> </div> </div>" +
+                    "</div></div>"
                 );
                 $.ajax({
-                  url: "http://localhost:8080/extendedExtract?t=" + encodeURIComponent(article.title),
+                  url: serverAddr + "/extendedExtract?t=" + encodeURIComponent(article.title) + "&s=" + strategy,
                   type: "GET",
                   dataType: "json",
-                  success: function(extractData) { $("#res" + i).html(extractData.data);}
+                  success: function(extractData) {
+                    $("#res" + i).html(extractData.data);
+                    $("#collapse" + i).html("<div class='panel-body'>" + extractData.data + "</div>")
+                  }
                 });
               });
             },
@@ -77,6 +91,25 @@
         <span class="input-group-btn">
           <button class="btn btn-default" type="button" id="submit">Submit</button>
         </span>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="btn-group" id="strategy" data-toggle="buttons">
+        <label class="btn btn-primary">
+          <input type="radio" value="SpecialSauce" id="2" name="strategy" autocomplete="off" /> SpecialSauce
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" value="Abstract" id="3" name="strategy" autocomplete="off" /> Abstract
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" value="Dense" id="4" name="strategy" autocomplete="off" /> Dense
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" value="Wordy" id="5" name="strategy" autocomplete="off" /> Wordy
+        </label>
+        <label class="btn btn-primary active">
+          <input type="radio" checked value="TitlePacked" id="6" name="strategy" autocomplete="off" /> TitlePacked
+        </label>
       </div>
     </div>
   </div>
