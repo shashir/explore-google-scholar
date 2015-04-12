@@ -73,12 +73,14 @@ object ScholarQuery {
    * These string may need to be regenerated every so often.
    */
   val ABUSE_EXCEPTION: String = ""
-  val COOKIES: Map[String, String] = Map("GOOGLE_ABUSE_EXEMPTION" -> ("ID=25fd976a814b24d2:TM=1428814722:C=" +
-    "c:IP=199.87.86.249-:S=APGng0uhSF0JAYQ9yHYF1uqxlY2BYQot5w"),
-    "PREF" -> "ID=4b47706a88b2c714:TM=1428814726:LM=1428814726:S=W7l_vI-klrJ2svtG",
-    "NID" -> ("67=rOJnkIdGiqRevfsN8swfxLyzXsCg1VcxFb_fHm76PijrMa75s7Ffm_9lM0k4Xi8nCkxayj" +
-      "oeXfw2Knc7wyLdrLQnubaerRppwrh5-Q1LG_zW-Q-_63tXbNZR67PtJ6dc"),
-    "GSP" -> "ID=4b47706a88b2c714:A=PnmQuA:CPTS=1428814736:LM=1428814736:S=LO6mwjTPOc-VI5XE")
+  val COOKIES: Map[String, String] = Map(
+    "GOOGLE_ABUSE_EXEMPTION" -> ("ID=7a5a8657eba5925d:TM=1428823005:C=c:IP=199.87.86.249-:" +
+      "S=APGng0uoddqwag2HeDQzvTVMDkBbp84nmw"),
+    "PREF" -> "ID=2b22e783bbce62ac:TM=1428823009:LM=1428823009:S=Eft0ytOG3Cr1m4GZ",
+    "NID" -> ("67=XiG_KcvuS95VbIxTPAAlw6067ffkeomIaSz0wxAO1IFR8RQ_wFtbZegwod97xAw-oUCzm36E_J7kg0Wditv" +
+      "kaVwPbw-OaBckba-ATrq8l3EjQFzrwZ2sQXWzjWwnw31A"),
+    "GSP" -> "ID=2b22e783bbce62ac:A=PnmQuA:CPTS=1428823016:LM=1428823016:S=MDVoy-LttMBraw1x"
+  )
   val USER_AGENT: String = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko/20090327 Galeon/2.0.7"
 
   /**
